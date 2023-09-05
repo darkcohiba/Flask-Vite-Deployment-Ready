@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+ipdb = "0.13.9"
+flask = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+sqlalchemy-serializer = "*"
+flask-restful = "*"
+flask-cors = "*"
+faker = "*"
+flask-bcrypt = "*"
+gunicorn = "*"
+honcho = "*"
+importlib-metadata = "*"
+psycopg2-binary = "*"
+python-dotenv = "*"
+psycopg2 = "*"
+
+
