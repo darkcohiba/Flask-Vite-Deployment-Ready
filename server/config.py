@@ -13,12 +13,19 @@ load_dotenv()
 
 # Local imports
 
+
+# deployed version uncomment below code, local version comment out below code
 app = Flask(
     __name__,
     static_url_path='',
-    static_folder='../client/build',
-    template_folder='../client/build'
+    static_folder='../client/dist',
+    template_folder='../client/dist'
 )
+
+# Instantiate app, set attributes
+
+# deployed version comment out below code, local version comment in below code
+# app = Flask(__name__)
 
 # Instantiate app, set attributes
 app = Flask(__name__)
