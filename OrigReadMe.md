@@ -1,151 +1,79 @@
-## Postgresql Database Environment Setup
+# Special Guide for this deployment build
 
-To make sure you're able to deploy your application, you'll need to do the
-following to set up backend database on render as a postgresql database:
-
-### Sign Up for a Render Account
-
-You can sign up at for a free account at
-[https://dashboard.render.com/][render dashboard]. We recommend signing up using
-your GitHub account- this will streamline the process of connecting your
-applications to Render later on.
-
-### Install PostgreSQL
-
-Render requires that you use PostgreSQL for your database instead of SQLite.
-PostgreSQL (or just Postgres for short) is an advanced database management
-system with more features than SQLite. If you don't already have it installed,
-you'll need to set it up.
-
-#### PostgreSQL Installation for WSL
-
-To install Postgres for WSL, run the following commands from your Ubuntu
-terminal:
-
-```console
-$ sudo apt update
-$ sudo apt install postgresql postgresql-contrib libpq-dev
-```
-
-Then confirm that Postgres was installed successfully:
-
-```console
-$ psql --version
-```
-
-Run this command to start the Postgres service:
-
-```console
-$ sudo service postgresql start
-```
-
-Finally, you'll also need to create a database user so that you are able to
-connect to the database from Flask. First, check what your operating system
-username is:
-
-```console
-$ whoami
-```
-
-If your username is "ian", for example, you'd need to create a Postgres user
-with that same name. To do so, run this command to open the Postgres CLI:
-
-```console
-$ sudo -u postgres -i
-```
-
-From the Postgres CLI, run this command (replacing "ian" with your username):
-
-```console
-$ createuser -sr ian
-```
-
-Then enter `control + d` or type `logout` to exit.
-
-[This guide][postgresql wsl] has more info on setting up Postgres on WSL if you
-get stuck.
-
-#### Postgresql Installation for OSX
-
-To install Postgres for OSX, you can use Homebrew:
-
-```console
-$ brew install postgresql
-```
-
-Once Postgres has been installed, run this command to start the Postgres
-service:
-
-```console
-$ brew services start postgresql
-```
-
-Phew! With that out of the way, let's get started on building our Flask
-application and deploying it to Render.
-
-***
-
-### Creating a PostgreSQL Database on Render
-
-Using SQLite, our database was generated in a file in our application directory.
-With PostgreSQL, the database is stored elsewhere- typically on a server
-dedicated to databases. Ours will be stored on a server at Render.
-
-From your Render dashboard, click the "New+" button and select PostgreSQL:
-
-![dropdown menu containing static site, web service, private service, background
-worker, cron job, postgresql, redis, and blueprint. postgresql is selected.](
-https://curriculum-content.s3.amazonaws.com/python/python-p4-deployment-render-postgres.png
-)
-
-Next, configure your database with a name, database name, user, and timezone.
-These can be whichever values you feel are best, note that some are optional and can be left blank.
-
-![form with fields name, database, user, region, postgresql version, and datadog
-api key](
-https://curriculum-content.s3.amazonaws.com/python/python-p4-deployment-render-postgres-config.png
-)
-
-Finally, create your database. It will expire after 90 days; you can always make
-a new one, but there are paid options available as well. For now, select the
-free tier:
-
-![payment options for render databases. the free tier is selected. there is a
-create database button at the bottom that will allow users to finish creating
-their database](
-https://curriculum-content.s3.amazonaws.com/python/python-p4-deployment-render-postgres-payment.png
-)
-
-From here, scroll down in the new database configuration page and copy the
-"External Database URL". Modify the protocol to say `postgresql` instead of
-`postgres` (SQLAlchemy is picky) and update the DATABASE_URI in the .env, like below:
-
-```python
-DATABASE_URI="External Database URL goes here"
-```
-
-
-
-Now we're ready to start building our app.
-
-# Next up!
-
-## after this point we should have forked this repo and updated our .env with the appropiate DATABASE URL
-
-- These steps will make a static version of our project that will be ready for deployment and also ready to run locally using our 'honcho' command
-
-- first, we want to make sure our requirements.txt is up to date with our pipfile
+- update the .env to include the postgressql  database.
+- create a requirements.txt from the pipfile
 ```console
 $ pipenv requirements > requirements.txt
 ```
 
-- second, we want to build the production version of our React app, this will create a static version that lives in our client side under dist:
+## Running Locally
+
+- run below command to run the frontend and backend locally
+```console
+$ honcho start -f Procfile.dev
+```
+
+
+## React Production Build
+
+One of the great features that Create React App provides to developers is the
+ability to build different versions of a React application for different
+environments.
+
+When working in the **development** environment, a typical workflow for adding
+new features to a React application is something like this:
+
+- Run `npm start` to run a development server.
+- Make changes to the app by editing the files.
+- View those changes in the browser.
+
+To enable this _excellent_ developer experience, Create React App uses
+[webpack](https://webpack.js.org/) under the hood to create a development server
+with hot module reloading, so any changes to the files in our application will
+be instantly visible to us in the browser. It also has a lot of other nice
+features in development mode, like showing us good error and warning messages
+via the console.
+
+Create React App is _also_ capable of building an entirely different version of
+our application for **production**, also thanks to webpack. The end goal of our
+application is to get it into the hands of our users via our website. For our
+app to run in production, we have a different set of needs:
+
+- **Build** the static HTML, JavaScript and CSS files needed to run our app in
+  the browser, keeping them as small as possible.
+- **Serve** the application's files from a server hosted online, rather than a
+  local webpack development server.
+- Don't show any error messages/warnings that are meant for developers rather
+  than our website's users.
+
+### Building a Static React App
+
+When developing the frontend of a site using Create React App, our ultimate goal
+is to create a **static site** consisting of pre-built HTML, JavaScript, and CSS
+files, which can be served by Flask when a user makes a request to the server to
+view our frontend. To demonstrate this process of **building** the production
+version of our React app and **serving** it from the Flask app, follow these
+steps.
+
+**1.** Build the production version of our React app:
 
 ```console
 $ npm run build --prefix client
 ```
 
-- third, add or make sure our static routes have been added to flask, flask static routes go in the config
+This command will generate a bundled and minified version of our React app in
+the `client/build` folder.
+
+Check out the files in that directory, and in particular the JavaScript files.
+You'll notice they have very little resemblance to the files in your `src`
+directory! This is because of that **bundling** and **minification** process:
+taking the source code you wrote, along with any external JavaScript libraries
+your code depends on, and squishing it as small as possible.
+
+**2.** Add static routes to Flask:
+
+If you check `app.py`, you will see that the following additions have been made
+since you last saw the bird API:
 
 ```py
 app = Flask(
@@ -154,55 +82,45 @@ app = Flask(
     static_folder='../client/build',
     template_folder='../client/build'
 )
-```
-- above code for create-react-app and below code for vite
 
-```py
-app = Flask(
-    __name__,
-    static_url_path='',
-    static_folder='../client/dist',
-    template_folder='../client/dist'
-)
-```
+...
 
-- fourth, add either of the below routes to the bottom of our app.py, this will set up an index page at / to show all of the site's static files.
-
-```py
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return render_template("index.html")
-```
-use either the above or below functions (but not both) 
-
-```py
 @app.errorhandler(404)
 def not_found(e):
     return render_template("index.html")
 
 ```
 
-- fourth, Lets make sure our 'Procfile.dev' is created and correct:
+These configure our Flask app for where to search for static and template files-
+both in our `client/build/` directory.
 
-```
-web: PORT=4000 npm start --prefix client
-api: gunicorn -b 127.0.0.1:5555 --chdir ./server app:app
-```
-- above code for create-react-app and below code for vite
-```
-web: npm run dev --prefix client
-api: gunicorn -b 127.0.0.1:5000 --chdir ./server app:app
-```
+We also set up a catch-all here for any route that doesn't match those already defined on the server. This means when Flask receives a request,it will render the index.html that was generated to run the client application. The client still handles its own routing
+through clicks and form submissions, but with this configuration, Flask can find the resources by URL as well. This is important for when people refresh the page, or visit your site, either manually, from bookmarks, or an external link.
 
-- fifth, push the code to github (which will trigger a new update of our deployed project) or run below code to run it locally:
+> **NOTE: Often, you may be setting up RESTful client-side routes, allowing people to go to `/birds` or `/birds/:id` to see all of the birds, or one at a time, respectively. These routes wouldn't be accessible on the frontend if they're already set up on the server (like they are in this app). To solve this, it's common to rewrite the backend routes so they all start with `/api/`, like `/api/birds` and `/api/birds/<int:id>` in order to free up the non-api urls to be used for client side routing. Just remember to also update your fetches to match backend urls.**
+
+**3.** Run the Flask server:
 
 ```console
-$ honcho start -f Procfile.dev
+$ gunicorn --chdir server app:app
 ```
 
-# Now that our project is uploaded on github and configured to deployment, lets set up render!
+Visit [http://localhost:8000](http://localhost:8000) in the browser. You should
+see the production version of the React application!
+
+Explore the React app in the browser using the React dev tools. What differences
+do you see between this version of the app and what you're used to when running
+in development mode?
+
+Now you've seen how to build a production version of the React application
+locally, and some of the differences between this version and the development
+version you're more familiar with.
+
+Now that you've seen how to create a production version of our React app
+locally and integrated it with Flask, let's talk about
+how to deploy the application to Render.
+
+---
 
 ## Render Build Process
 
@@ -254,7 +172,7 @@ sure the following values are set:
 
 ```txt
 DATABASE_URI=postgresql://{retrieve this from from render}
-PYTHON_VERSION=YOUR_PYTHON_VERSION
+PYTHON_VERSION="your python version"
 ```
 
 Click "Save Changes" and wait for a while. (Render's free tier can take up to
@@ -264,7 +182,6 @@ Render tells you the site is "Live", navigate to your site URL and view Birdsy
 in all its glory!
 
 ---
-
 
 # Phase 4 Full-Stack Application Project Template
 
@@ -625,4 +542,7 @@ Happy coding!
 - [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
 - [Python Circular Imports - StackAbuse](https://stackabuse.com/python-circular-imports/)
 - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/)
+
+
+
 
