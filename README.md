@@ -155,7 +155,7 @@ app = Flask(
     template_folder='../client/build'
 )
 ```
-- above code for create-react-app and below code for vite
+above code for create-react-app and below code for vite
 
 ```py
 app = Flask(
@@ -190,7 +190,7 @@ def not_found(e):
 web: PORT=4000 npm start --prefix client
 api: gunicorn -b 127.0.0.1:5555 --chdir ./server app:app
 ```
-- above code for create-react-app and below code for vite
+above code for create-react-app and below code for vite
 ```
 web: npm run dev --prefix client
 api: gunicorn -b 127.0.0.1:5000 --chdir ./server app:app
