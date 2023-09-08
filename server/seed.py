@@ -8,7 +8,7 @@ from faker import Faker
 
 # Local imports
 from app import app
-from models import db
+from models import db, Yoga_Class, Yoga_SignUp, User, Community_Event, Community_Event_SignUp
 
 if __name__ == '__main__':
     fake = Faker()

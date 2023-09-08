@@ -91,7 +91,7 @@ class User(db.Model, SerializerMixin):
     # birthday = db.Column(db.Integer)
     # phone_number = db.Column(db.Integer)
     email = db.Column(db.String)
-    password = db.Column(db.String)
+    # password = db.Column(db.String)
     address = db.Column(db.String)
     pronouns = db.Column(db.String)
     role = db.Column(db.String)
@@ -128,6 +128,7 @@ class User(db.Model, SerializerMixin):
     
     @validates('email')
     def validate_email(self, key, email):
+        #add query for unique email validation
         if '@' not in email:
             raise ValueError("Enter valid email")
         return email

@@ -11,7 +11,7 @@ from config import app, db, api
 # Add your model imports
 from models import db, Yoga_Class, Yoga_SignUps, Users, Community_Event_SignUps, Community_Events
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 
 @app.route('/')
