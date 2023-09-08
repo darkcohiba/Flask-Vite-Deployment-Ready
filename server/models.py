@@ -11,7 +11,7 @@ class Yoga_Class(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     class_name = db.Column(db.String)
-    class_type = db.Column(db.String)
+    # class_type = db.Column(db.String)
     class_description = db.Column(db.String)
     start_time = db.Column(db.DateTime, server_default=db.func.now())
     time_duration = db.Column(db.String)
