@@ -1,5 +1,5 @@
 # Standard library imports
-
+import os
 # Remote library imports
 from flask import Flask
 from flask_cors import CORS
@@ -15,12 +15,12 @@ load_dotenv()
 
 
 # deployed version uncomment below code, local version comment out below code
-app = Flask(
-    __name__,
-    static_url_path='',
-    static_folder='../client/dist',
-    template_folder='../client/dist'
-)
+# app = Flask(
+#     __name__,
+#     static_url_path='',
+#     static_folder='../client/dist',
+#     template_folder='../client/dist'
+# )
 
 # Instantiate app, set attributes
 

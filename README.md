@@ -1,3 +1,41 @@
+# How to use this readme
+
+Hello, thank you for using this template. This template is set up with the skeleton for deployment, and this readme will explain how to build the body. Although, you dont need to deploy and you can run the frontend normally according to Vite, and the backend according to Flask. (If you do want to work locally at this time, update the SQLALCHEMY_DATABASE_URI to 'sqlite:///app.db')
+
+```bash
+npm run dev
+```
+
+```bash
+flask run 
+```
+or
+```bash
+python3 server/app.py 
+```
+
+If you do want to deploy, first we need to set up our system for the postgresql database and also set our postgresql database on render
+
+- [Set up our system for the postgresql database](#postgresql-database-environment-setup)
+- [Set our postgresql database on render](#creating-a-postgresql-database-on-render)
+
+Perfect! Great job installing postgresql on your computer, setting up your Render postgresql database and assigning it in your .env file!
+
+Our flask is now set up to operate with our Render postgresql database! we can start creating our database and view our Vite project locally without deploying at this time. At this time we can run this command to run our frontend and backend parallel:
+
+```console
+$ honcho start -f Procfile.dev
+```
+
+To deploy we will follow the next two steps to build our production build and finally deploy it on Render!
+
+- [Build our production Vite files and alter our Flask app](#Deployment-Build)
+- [Render Deployment Guide](#Render-Build-Process)
+
+This Vite and Flask template made for deployment is built on top a template not made for deployment and without Vite. The original Readme can be found here
+
+- [Original ReadME](#phase-4-full-stack-application-project-template)
+
 ## Postgresql Database Environment Setup
 
 To make sure you're able to deploy your application, you'll need to do the
@@ -128,7 +166,7 @@ DATABASE_URI="External Database URL goes here"
 
 Now we're ready to start building our app.
 
-# Next up!
+# Deployment Build
 
 ## after this point we should have forked this repo and updated our .env with the appropiate DATABASE URL
 
@@ -184,7 +222,7 @@ def not_found(e):
 
 ```
 
-- fourth, Lets make sure our 'Procfile.dev' is created and correct:
+- fifth, Lets make sure our 'Procfile.dev' is created and correct:
 
 ```
 web: PORT=4000 npm start --prefix client
@@ -196,7 +234,7 @@ web: npm run dev --prefix client
 api: gunicorn -b 127.0.0.1:5000 --chdir ./server app:app
 ```
 
-- fifth, push the code to github (which will trigger a new update of our deployed project) or run below code to run it locally:
+- lastly, push the code to github (which will trigger a new update of our deployed project) or run below the code in our terminal to run it locally:
 
 ```console
 $ honcho start -f Procfile.dev
