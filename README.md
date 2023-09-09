@@ -168,22 +168,20 @@ Now we're ready to start building our app.
 
 # Deployment Build
 
-## after this point we should have forked this repo and updated our .env with the appropiate DATABASE URL
-
 - These steps will make a static version of our project that will be ready for deployment and also ready to run locally using our 'honcho' command
 
-- first, we want to make sure our requirements.txt is up to date with our pipfile
+- first, Render wont use our pipfile to create a shell like we typically do locally, instead it will install all of our packages from a requirements.txt. This code will create a requirements.txt according to our pipenv packages:
 ```console
 $ pipenv requirements > requirements.txt
 ```
 
-- second, we want to build the production version of our React app, this will create a static version that lives in our client side under dist:
+- second, we want to build the production version of our React app, this will create a static version that lives in our client under dist:
 
 ```console
 $ npm run build --prefix client
 ```
 
-- third, add or make sure our static routes have been added to flask, flask static routes go in the config
+- third, our server/config.py has two app=flask commands, comment the deployment code in, it should match the below code(it is set up for Vite):
 
 ```py
 app = Flask(
@@ -204,10 +202,9 @@ app = Flask(
 )
 ```
 
-- fourth, add either of the below routes to the bottom of our app.py, this will set up an index page at / to show all of the site's static files.
+- fourth, both of these routes are in the bottom of the server/app.py, comment back in one of the methods, they will allow our flask app to deploy our frontend by default. It is recommended that we setup our backend routes to start with an extra preface such as '/api'.
 
 ```py
-
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
@@ -224,21 +221,22 @@ def not_found(e):
 
 - fifth, Lets make sure our 'Procfile.dev' is created and correct:
 
-```
+```bash
 web: PORT=4000 npm start --prefix client
 api: gunicorn -b 127.0.0.1:5555 --chdir ./server app:app
 ```
 above code for create-react-app and below code for vite
-```
+```bash
 web: npm run dev --prefix client
 api: gunicorn -b 127.0.0.1:5000 --chdir ./server app:app
 ```
 
-- lastly, push the code to github (which will trigger a new update of our deployed project) or run below the code in our terminal to run it locally:
+- lastly, push the code to github (which will trigger a new update of our deployed project) or run below the code in our terminal to run it locally (we also need to change our app = Flask to the local version in the config):
 
 ```console
 $ honcho start -f Procfile.dev
 ```
+
 
 # Now that our project is uploaded on github and configured to deployment, lets set up render!
 
