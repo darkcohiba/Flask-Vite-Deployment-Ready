@@ -18,6 +18,5 @@ honcho = "*"
 importlib-metadata = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
-psycopg2 = "*"
 
 

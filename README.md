@@ -1,4 +1,4 @@
-# How to use this readme
+# How to use this Template!
 
 Hello, thank you for using this template. This template is set up with the skeleton for deployment, and this readme will explain how to build the body. Although, you dont need to deploy and you can run the frontend normally according to Vite, and the backend according to Flask. (If you do want to work locally at this time, update the SQLALCHEMY_DATABASE_URI to 'sqlite:///app.db')
 
