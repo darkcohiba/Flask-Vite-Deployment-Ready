@@ -34,7 +34,7 @@ To deploy we will follow the next two steps to build our production build and fi
 
 This Vite and Flask template made for deployment is built on top a template not made for deployment and without Vite. The original Readme can be found here
 
-- [Original ReadME](#phase-4-full-stack-application-project-template)
+- [Original Readme!](#phase-4-full-stack-application-project-template)
 
 ## Postgresql Database Environment Setup
 
