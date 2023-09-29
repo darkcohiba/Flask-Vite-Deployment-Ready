@@ -25,7 +25,7 @@ load_dotenv()
 # Instantiate app, set attributes
 
 # deployed version comment out below code, local version comment in below code
-# app = Flask(__name__)
+app = Flask(__name__)
 
 # Instantiate app, set attributes
 app = Flask(__name__)
